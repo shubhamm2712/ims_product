@@ -1,4 +1,8 @@
+from typing import List
+
 from ..models.product import Product
 
-def get_products(product: Product):
-    pass
+from ..database import db_ops
+
+def get_products(product: Product) -> List[Product]:
+    return db_ops.get_products(product)

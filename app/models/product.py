@@ -9,6 +9,6 @@ class Product(SQLModel, table=True):
     type: Optional[str] = None
     subtype: Optional[str] = None
     description: Optional[str] = None
-    meta_data: Optional[str] = None
+    metaData: Optional[str] = None
     quantity: Optional[float] = None
     rate: Optional[float] = None
