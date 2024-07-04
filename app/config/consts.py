@@ -9,7 +9,7 @@ GET_GET_PRODS = "/get_products"
 CONFIG_FILE = ".env"
 
 # Logger
-LOG_FILE = "app.log"
+LOG_FILE = "app/app.log"
 
 # Databases
 DB_FILE_NAME = "app/database/database.db"
