@@ -2,6 +2,7 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings
 
+from .consts import CONFIG_FILE
 
 class Settings(BaseSettings):
     auth0_domain: str
@@ -10,7 +11,7 @@ class Settings(BaseSettings):
     auth0_algorithms: str
 
     class Config:
-        env_file = ".env"
+        env_file = CONFIG_FILE
 
 
 @lru_cache()

@@ -56,12 +56,9 @@ def delete_product(product: Product) -> None:
 def quan_update(product: Product) -> Product:
     with Session(engine) as session:
         new_quantity = product.quantity
-        if new_quantity == 0 or abs(new_quantity-0)<10e-3: # for floating point errors
-            delete_product(product)
-        else:
-            product = session.get(Product, product.id)
-            product.quantity = new_quantity
-            session.add(product)
-            session.commit()
-            session.refresh(product)
+        product = session.get(Product, product.id)
+        product.quantity = new_quantity
+        session.add(product)
+        session.commit()
+        session.refresh(product)
     return product
