@@ -26,11 +26,13 @@ def add_product_validator(product: Product):
     return product
 
 def update_quantity_validator(product: Product):
+    sanitize(product)
     if product.id is None or product.quantity is None:
         raise InvalidBodyException(PRODUCT_DETAILS_MISSING_QUAN)
     return product
 
 def del_product_validator(product: Product):
+    sanitize(product)
     if product.id is None:
         raise InvalidBodyException(ID_NOT_FOUND)
     return product
