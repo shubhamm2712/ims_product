@@ -11,8 +11,9 @@ def transform_update_quantity(product: Product) -> None:
     if product.quantity<0 and -product.quantity > prod_id_quans[product.id]:
         raise InvalidBodyException(QUANTITY_LOW)
     product.quantity += prod_id_quans[product.id]
+    product.quantity = round(product.quantity,4)
 
-def update_quantity(product: Product):
+def update_quantity(product: Product) -> None:
     transform_update_quantity(product)
     if product.quantity == 0 or product.quantity<FLOATING_POINT_ERROR:
         db_ops.delete_product(product)

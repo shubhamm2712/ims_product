@@ -4,7 +4,7 @@ from ..config.consts import ID_NOT_FOUND
 from ..database import db_ops
 from ..exceptions.invalid_body_exceptions import InvalidBodyException
 
-def isProdUpdate(product: Product):
+def isProdUpdate(product: Product) -> bool:
     if product.id:
         return True
     return False
@@ -14,7 +14,7 @@ def validateUpdate(product: Product) -> None:
     if product.id not in prod_ids:
         raise InvalidBodyException(ID_NOT_FOUND)
 
-def add_product(product: Product):
+def add_product(product: Product) -> None:
     isUpdate = isProdUpdate(product)
     if isUpdate:
         validateUpdate(product)

@@ -9,6 +9,6 @@ def validateUpdate(product: Product) -> None:
     if product.id not in prod_ids:
         raise InvalidBodyException(ID_NOT_FOUND)
 
-def del_product(product: Product):
+def del_product(product: Product) -> None:
     validateUpdate(product)
     db_ops.delete_product(product)

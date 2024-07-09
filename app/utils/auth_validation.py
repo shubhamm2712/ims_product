@@ -1,6 +1,6 @@
 import jwt
 
-from typing import Optional
+from typing import Optional, Dict
 
 from fastapi import Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
@@ -16,7 +16,7 @@ class VerifyToken:
 
     async def verify(self, 
                      token: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer())
-                     ):
+                     ) -> Dict:
         if token is None:
             raise UnauthenticatedException
         

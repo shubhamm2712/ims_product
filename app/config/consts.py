@@ -25,6 +25,8 @@ QUANTITY_LOW = "Quantity too low to delete"
 PRODUCT_DETAILS_MISSING_ADD = "Product details missing in add product request"
 PRODUCT_DETAILS_MISSING_UPDATE = "Product details missing to update product request"
 PRODUCT_DETAILS_MISSING_QUAN = "Product details are missing in update quantity request"
+PRODUCT_DETAILS_NEG_QUANTITY = "Product cannot have negative or 0 quantity"
+INVALID_PRODUCT_DETAILS_TYPE = "Invalid product details type"
 
 # MODEL
 ORG = "org"
