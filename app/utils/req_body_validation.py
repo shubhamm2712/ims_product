@@ -1,4 +1,4 @@
-from ..config.consts import ID_NOT_FOUND, PRODUCT_DETAILS_MISSING_ADD, PRODUCT_DETAILS_MISSING_UPDATE, PRODUCT_DETAILS_MISSING_QUAN, PRODUCT_DETAILS_NEG_QUANTITY, INVALID_PRODUCT_DETAILS_TYPE
+from ..config.consts import ID_NOT_FOUND, PRODUCT_DETAILS_MISSING_ADD, PRODUCT_DETAILS_MISSING_QUAN, PRODUCT_DETAILS_NEG_QUANTITY, INVALID_PRODUCT_DETAILS_TYPE
 from ..models.product import Product
 from ..exceptions.invalid_body_exceptions import InvalidBodyException
 
@@ -44,12 +44,8 @@ def sanitize(product: Product) -> None:
 
 def add_product_validator(product: Product) -> Product:
     sanitize(product)
-    if product.id is None:
-        if product.name is None or product.rate is None or product.quantity is None:
-            raise InvalidBodyException(PRODUCT_DETAILS_MISSING_ADD)
-    else:
-        if not (product.name or product.type or product.subtype or product.metaData or product.description or product.quantity or product.rate):
-            raise InvalidBodyException(PRODUCT_DETAILS_MISSING_UPDATE)
+    if product.name is None or product.rate is None or product.quantity is None:
+        raise InvalidBodyException(PRODUCT_DETAILS_MISSING_ADD)
     if product.quantity and product.quantity<=0:
         raise InvalidBodyException(PRODUCT_DETAILS_NEG_QUANTITY)
     return product

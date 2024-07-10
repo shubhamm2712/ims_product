@@ -20,14 +20,10 @@ class Product(SQLModel, table=True):
             self.org = product.org
         if product.name:
             self.name = product.name
-        if product.type:
-            self.type = product.type
-        if product.subtype:
-            self.subtype = product.subtype
-        if product.description:
-            self.description = product.description
-        if product.metaData:
-            self.metaData = product.metaData
+        self.type = product.type
+        self.subtype = product.subtype
+        self.description = product.description
+        self.metaData = product.metaData
         if product.quantity:
             self.quantity = product.quantity
         if product.rate:
