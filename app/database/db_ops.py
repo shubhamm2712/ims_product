@@ -42,8 +42,7 @@ def add_product(product: Product) -> Product:
 def update_product(product: Product) -> Product:
     with Session(engine) as session:
         db_product = session.get(Product, product.id)
-        if db_product.id == product.id and db_product.org == product.org:
-            db_product.update(product)
+        db_product.update(product)
         session.add(db_product)
         session.commit()
         session.refresh(db_product)
