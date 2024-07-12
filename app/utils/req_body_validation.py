@@ -54,7 +54,6 @@ def sanitize(product: Product) -> None:
 
 def add_product_validator(product: Product) -> Product:
     sanitize(product)
-    print(product)
     if product.name is None or product.rate is None or product.quantity is None:
         raise InvalidBodyException(PRODUCT_DETAILS_MISSING_ADD)
     if product.quantity and product.quantity<=0:
