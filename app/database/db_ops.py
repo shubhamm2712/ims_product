@@ -1,9 +1,16 @@
 from sqlmodel import Session, select
-from typing import Set, Dict, List
+from typing import Set, Dict, Optional
 
 from .db_config import engine
 
 from ..models.product import Product
+
+def get_product(product: Product) -> Optional[Product]:
+    with Session(engine) as session:
+        statement = select(Product).where(Product.org == product.org, Product.id == product.id)
+        results = session.exec(statement)
+        product = results.first()
+    return product
 
 def get_products(product: Product) -> Dict[int, Product]:
     prods = dict()

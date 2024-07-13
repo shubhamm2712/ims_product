@@ -4,6 +4,7 @@ POST_ADD_PRODUCT = "/add_product"
 POST_UPDATE_QUAN = "/update_prod_quantity"
 POST_DELETE_PROD = "/del_product"
 GET_GET_PRODS = "/get_products"
+GET_GET_PROD = "/get_product"
 
 # Config file
 CONFIG_FILE = ".env"
@@ -13,7 +14,7 @@ LOG_FILE = "app/app.log"
 
 # Databases
 DB_FILE_NAME = "app/database/database.db"
-DB_ECHO = True
+DB_ECHO = False
 
 # Service
 FLOATING_POINT_ERROR = 10e-4

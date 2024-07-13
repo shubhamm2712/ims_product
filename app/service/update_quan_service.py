@@ -16,6 +16,7 @@ def transform_update_quantity(product: Product) -> None:
 def update_quantity(product: Product) -> None:
     transform_update_quantity(product)
     if product.quantity == 0 or product.quantity<FLOATING_POINT_ERROR:
-        db_ops.delete_product(product)
+        product = db_ops.delete_product(product)
     else:
-        db_ops.quan_update(product)
+        product = db_ops.quan_update(product)
+    return product

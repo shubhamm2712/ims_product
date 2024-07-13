@@ -66,7 +66,7 @@ def update_quantity_validator(product: Product) -> Product:
         raise InvalidBodyException(PRODUCT_DETAILS_MISSING_QUAN)
     return product
 
-def del_product_validator(product: Product) -> Product:
+def product_validator(product: Product) -> Product:
     sanitize(product)
     if product.id is None:
         raise InvalidBodyException(ID_NOT_FOUND)

@@ -14,10 +14,11 @@ def validateUpdate(product: Product) -> None:
     if product.id not in prod_ids:
         raise InvalidBodyException(ID_NOT_FOUND)
 
-def add_product(product: Product) -> None:
+def add_product(product: Product) -> Product:
     isUpdate = isProdUpdate(product)
     if isUpdate:
         validateUpdate(product)
-        db_ops.update_product(product)
+        product = db_ops.update_product(product)
     else:
-        db_ops.add_product(product)
+        product = db_ops.add_product(product)
+    return product
