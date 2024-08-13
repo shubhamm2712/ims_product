@@ -54,3 +54,4 @@ async def get_product(product: Product = Depends(product_validator), auth_result
     logger.debug("In get_products:" + str(product))
     product = get_products_service.get_product(product)
     return product
+# Need to alter a lot
