@@ -1,56 +1,95 @@
 from fastapi import APIRouter
-from fastapi import Depends, Security
+from fastapi import Depends, Security, Query
 
-from typing import List, Optional
+from typing import List, Dict
 
-from ..config.consts import PATH_PREFIX, POST_ADD_PRODUCT, POST_UPDATE_QUAN, POST_DELETE_PROD, GET_GET_PRODS, GET_GET_PROD
-from ..config.logger_config import logger
-
+from ..config.consts import PATH_PREFIX, ProductRoutes, ORG
+from ..config import logger
+from ..exceptions import ExceptionClass
 from ..models.product import Product
-
-from ..service import add_product_service, update_quan_service, del_product_service, get_products_service
-
-from ..utils.auth_validation import VerifyToken
-from ..utils.req_body_validation import add_product_validator, product_validator, update_quantity_validator
-from ..utils.utils import set_org_product
+from ..service import CreateProductService, ReadProductService, UpdateProductService, DeleteProductService
+from ..utils import VerifyToken, ProductValidators, set_org_product, set_org_multiple_products
 
 apiRouter = APIRouter(prefix=PATH_PREFIX)
 auth = VerifyToken()
 
-# Product 
-@apiRouter.post(POST_ADD_PRODUCT, response_model = Product)
-async def add_product(product: Product = Depends(add_product_validator), auth_result: dict = Security(auth.verify)) -> Product:
+bad_request_responses = {
+    400: {
+        "description": "Error: Bad Request",
+        "model": ExceptionClass
+    }
+}
+
+auth_responses = {
+    401: {
+        "description": "Error: Unauthorized",
+        "model": ExceptionClass
+    },
+    403: {
+        "description": "Error: Forbidden",
+        "model": ExceptionClass
+    }
+}
+
+@apiRouter.post(ProductRoutes.POST_ADD_PRODUCT, response_model=Product, responses=auth_responses|bad_request_responses)
+async def add_product(product: Product = Depends(ProductValidators.add_validator), auth_result: Dict = Security(auth.verify)) -> Product:
     set_org_product(product, auth_result)
     logger.debug("In add_product:" + str(product))
-    product = add_product_service.add_product(product)
-    return product
+    return CreateProductService.add_product(product)
 
-@apiRouter.post(POST_UPDATE_QUAN, response_model = Optional[Product])
-async def update_prod_quantity(product: Product = Depends(update_quantity_validator), auth_result: dict = Security(auth.verify)) -> Optional[Product]:
+@apiRouter.put(ProductRoutes.PUT_ADD_QUAN_PRODUCT, response_model=Product, responses=auth_responses|bad_request_responses)
+async def add_product_quantity(product: Product = Depends(ProductValidators.rate_validator), auth_result: Dict = Security(auth.verify)) -> Product:
     set_org_product(product, auth_result)
-    logger.debug("In update_prod_quantity:" + str(product))
-    product = update_quan_service.update_quantity(product)
-    return product
+    logger.debug("In add_product_quantity:" + str(product))
+    return UpdateProductService.add_product_quantity(product)
 
-@apiRouter.post(POST_DELETE_PROD, response_model = List[Product])
-async def del_product(product: Product = Depends(product_validator), auth_result: dict = Security(auth.verify)) -> List[Product]:
+@apiRouter.put(ProductRoutes.PUT_DEL_QUAN_PRODUCT, response_model=Product, responses=auth_responses|bad_request_responses)
+async def del_product_quantity(product: Product = Depends(ProductValidators.quan_validator), auth_result: Dict = Security(auth.verify)) -> Product:
     set_org_product(product, auth_result)
-    logger.debug("In del_product:" + str(product))
-    del_product_service.del_product(product)
-    products = await get_products(auth_result)
-    return products
+    logger.debug("In del_product_quantity:" + str(product))
+    return UpdateProductService.del_product_quantity(product)
 
-# Get Products
-@apiRouter.get(GET_GET_PRODS, response_model = List[Product])
-async def get_products(auth_result: dict = Security(auth.verify)) -> List[Product]:
-    product = set_org_product(Product(), auth_result)
-    logger.debug("In get_products:" + str(product))
-    products = get_products_service.get_products(product)
-    return products
+@apiRouter.put(ProductRoutes.PUT_DEACTIVATE_PRODUCTS, response_model=List[Product], responses=auth_responses)
+async def deactivate_products(products: List[Product] = Depends(ProductValidators.list_id_validator), auth_result: Dict = Security(auth.verify)) -> List[Product]:
+    set_org_multiple_products(products, auth_result)
+    logger.debug("In deactivate_products:" + str(products))
+    UpdateProductService.deactivate_products(products)
+    return await get_all_products(auth_result)
+    
+@apiRouter.put(ProductRoutes.PUT_RECOVER_PRODUCTS, response_model=List[Product], responses=auth_responses)
+async def recover_products(products: List[Product] = Depends(ProductValidators.list_id_validator), auth_result: Dict = Security(auth.verify)) -> List[Product]:
+    set_org_multiple_products(products, auth_result)
+    logger.debug("In recover_products:" + str(products))
+    UpdateProductService.recover_products(products)
+    return await get_all_products(auth_result)
 
-@apiRouter.get(GET_GET_PROD, response_model = Product)
-async def get_product(product: Product = Depends(product_validator), auth_result: dict = Security(auth.verify)) -> Product:
+@apiRouter.get(ProductRoutes.GET_PRODUCT+"/{product_id}", response_model=Product, responses=auth_responses|bad_request_responses)
+async def get_product(product_id: int, auth_result: Dict = Security(auth.verify)):
+    product: Product = Product(id=product_id)
     set_org_product(product, auth_result)
-    logger.debug("In get_products:" + str(product))
-    product = get_products_service.get_product(product)
-    return Product
+    logger.debug("In get_product:" + str(product))
+    return ReadProductService.get_product(product)
+
+@apiRouter.get(ProductRoutes.GET_ALL_PRODUCTS, response_model=List[Product], responses=auth_responses)
+async def get_all_products(auth_result: Dict = Security(auth.verify)) -> List[Product]:
+    product: Product = set_org_product(Product(), auth_result)
+    logger.debug("In get_all_products:" + str(product))
+    return ReadProductService.get_all_products(product)
+
+@apiRouter.get(ProductRoutes.GET_PRODUCTS_LIST+"/", response_model=List[Product], responses=auth_responses)
+async def get_products_list(product_id: List[int] = Query([]), auth_result: Dict = Security(auth.verify)) -> List[Product]:
+    logger.debug("In get_products_list:" + str(product_id))
+    return ReadProductService.get_products_list(auth_result[ORG], product_id)
+
+@apiRouter.get(ProductRoutes.GET_DELETED_PRODUCTS, response_model=List[Product], responses=auth_responses)
+async def get_deleted_products(auth_result: Dict = Security(auth.verify)) -> List[Product]:
+    product: Product = set_org_product(Product(), auth_result)
+    logger.debug("In get_deleted_products:" + str(product))
+    return ReadProductService.get_deleted_products(product)
+
+@apiRouter.delete(ProductRoutes.DELETE_PRODUCTS, response_model=List[Product], responses=auth_responses)
+async def delete_products(products: List[Product] = Depends(ProductValidators.list_id_validator), auth_result: Dict = Security(auth.verify)) -> List[Product]:
+    set_org_multiple_products(products, auth_result)
+    logger.debug("In delete_products:" + str(products))
+    DeleteProductService.delete_products(products)
+    return await get_deleted_products(auth_result)

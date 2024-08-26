@@ -3,10 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from contextlib import asynccontextmanager
 
-from .config.config import get_settings
-
-from .database.db_config import create_db_and_tables
-
+from .config import get_cors_settings, create_db_and_tables
 from .routes import products
 
 @asynccontextmanager
@@ -16,7 +13,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan = lifespan)
 
-settings = get_settings()
+settings = get_cors_settings()
 origins = ['*'] if settings.origin is None else settings.origin.split(',')
 
 app.add_middleware(
