@@ -7,6 +7,8 @@ class ProductRoutes:
 
     PUT_ADD_QUAN_PRODUCT = "/add_quantity_product"
     PUT_DEL_QUAN_PRODUCT = "/del_quantity_product"
+
+    PUT_ROLLBACK_QUAN_PRODUCT = "/rollback_quantity_product"
     
     PUT_DEACTIVATE_PRODUCTS = "/deactivate_products"
     PUT_RECOVER_PRODUCTS = "/recover_products"

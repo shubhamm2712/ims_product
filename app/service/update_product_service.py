@@ -33,3 +33,9 @@ class UpdateProductService:
         if product_entity.quantity == -1:
             raise InvalidBodyException(PRODUCT_DETAILS_NEG_QUANTITY)
         return product_entity
+    
+    def rollback_product_quantity(product: Product) -> Product:
+        product_entity: Optional[Product] = UpdateProductDB.rollback_quantity(product)
+        if product_entity is None:
+            raise InvalidBodyException(PRODUCT_DOES_NOT_EXIST)
+        return product_entity
