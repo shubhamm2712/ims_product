@@ -67,7 +67,7 @@ async def recover_products(products: List[Product] = Depends(ProductValidators.l
     set_org_multiple_products(products, auth_result)
     logger.debug("In recover_products:" + str(products))
     UpdateProductService.recover_products(products)
-    return await get_all_products(auth_result)
+    return await get_deleted_products(auth_result)
 
 @apiRouter.get(ProductRoutes.GET_PRODUCT+"/{product_id}", response_model=Product, responses=auth_responses|bad_request_responses)
 async def get_product(product_id: int, auth_result: Dict = Security(auth.verify)):
