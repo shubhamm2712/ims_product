@@ -1,6 +1,6 @@
 from typing import List
 
-from ..config.consts import ID_NOT_FOUND, INVALID_PRODUCT_DETAILS_TYPE, NAME_NOT_FOUND, PRODUCT_CANNOT_HAVE_NEG_OR_ZERO_QUAN, PRODUCT_CANNOT_HAVE_NEG_RATE, QUANTITY_NOT_FOUND, RATE_NOT_FOUND
+from ..config.consts import ID_NOT_FOUND, INVALID_PRODUCT_DETAILS_TYPE, NAME_NOT_FOUND, PRODUCT_CANNOT_HAVE_NEG_OR_ZERO_QUAN, PRODUCT_CANNOT_HAVE_NEG_RATE, QUANTITY_NOT_FOUND, RATE_NOT_FOUND, USED_IN_TRANSACTION_NOT_FOUND, PRODUCT_CANNOT_HAVE_NEG_QUANTITY
 from ..models.product import Product
 from ..exceptions import InvalidBodyException
 
@@ -50,8 +50,6 @@ class ProductValidators:
         if product.avgBuyRate is not None:
             if type(product.avgBuyRate) != int and type(product.avgBuyRate) != float:
                 raise InvalidBodyException(INVALID_PRODUCT_DETAILS_TYPE)
-        product.active = 1
-        product.usedInTransaction = 0
 
     def add_validator(product: Product) -> Product:
         ProductValidators.sanitize(product)
@@ -59,6 +57,8 @@ class ProductValidators:
             raise InvalidBodyException(NAME_NOT_FOUND)
         product.avgBuyRate = 0.0
         product.quantity = 0.0
+        product.active = 1
+        product.usedInTransaction = 0
         return product
 
     def id_validator(product: Product) -> Product:
@@ -86,4 +86,20 @@ class ProductValidators:
             raise InvalidBodyException(RATE_NOT_FOUND)
         if product.avgBuyRate<0:
             raise InvalidBodyException(PRODUCT_CANNOT_HAVE_NEG_RATE)
+        return product
+    
+    def rollback_validator(product: Product) -> Product:
+        ProductValidators.id_validator(product)
+        if product.quantity is None:
+            raise InvalidBodyException(QUANTITY_NOT_FOUND)
+        if product.quantity<0:
+            raise InvalidBodyException(PRODUCT_CANNOT_HAVE_NEG_QUANTITY)
+        if product.avgBuyRate is None:
+            raise InvalidBodyException(RATE_NOT_FOUND)
+        if product.avgBuyRate<0:
+            raise InvalidBodyException(PRODUCT_CANNOT_HAVE_NEG_RATE)
+        if product.usedInTransaction is None or type(product.usedInTransaction) != int:
+            raise InvalidBodyException(USED_IN_TRANSACTION_NOT_FOUND)
+        if product.usedInTransaction != 0 and product.usedInTransaction != 1:
+            raise InvalidBodyException(USED_IN_TRANSACTION_NOT_FOUND)
         return product

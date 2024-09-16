@@ -41,6 +41,7 @@ class UpdateProductDB:
                 return None
             original_quantity = db_product.quantity
             original_rate = db_product.avgBuyRate
+            original_used_in_trans =  db_product.usedInTransaction
             current_total_buy_cost = db_product.quantity * db_product.avgBuyRate
             current_total_buy_cost += product.quantity * product.avgBuyRate
             db_product.quantity = round(db_product.quantity + product.quantity, ROUNDING_FACTOR)
@@ -52,6 +53,7 @@ class UpdateProductDB:
             session.refresh(db_product)
             db_product.quantity = original_quantity
             db_product.avgBuyRate = original_rate
+            db_product.usedInTransaction = original_used_in_trans
             return db_product
     
     def del_quantity(product: Product) -> Optional[Product]:
@@ -66,6 +68,7 @@ class UpdateProductDB:
                 return db_product
             original_quantity = db_product.quantity
             original_rate = db_product.avgBuyRate
+            original_used_in_trans =  db_product.usedInTransaction
             current_total_buy_cost = db_product.quantity * db_product.avgBuyRate
             current_total_buy_cost -= product.quantity * db_product.avgBuyRate
             db_product.quantity = round(db_product.quantity - product.quantity, ROUNDING_FACTOR)
@@ -80,6 +83,7 @@ class UpdateProductDB:
             session.refresh(db_product)
             db_product.quantity = original_quantity
             db_product.avgBuyRate = original_rate
+            db_product.usedInTransaction = original_used_in_trans
             return db_product
         
     def rollback_quantity(product: Product) -> Optional[Product]:
@@ -92,7 +96,7 @@ class UpdateProductDB:
             db_product.quantity = round(product.quantity, ROUNDING_FACTOR)
             db_product.avgBuyRate = round(product.avgBuyRate, ROUNDING_FACTOR)
             db_product.active = 1
-            db_product.usedInTransaction = 1
+            db_product.usedInTransaction = product.usedInTransaction
             session.add(db_product)
             session.commit()
             session.refresh(db_product)

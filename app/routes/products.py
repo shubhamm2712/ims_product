@@ -50,7 +50,7 @@ async def del_product_quantity(product: Product = Depends(ProductValidators.quan
     return UpdateProductService.del_product_quantity(product)
 
 @apiRouter.put(ProductRoutes.PUT_ROLLBACK_QUAN_PRODUCT, response_model=Product, responses=auth_responses|bad_request_responses)
-async def rollback_product_quantity(product: Product = Depends(ProductValidators.rate_validator), auth_result: Dict = Security(auth.verify)) -> Product:
+async def rollback_product_quantity(product: Product = Depends(ProductValidators.rollback_validator), auth_result: Dict = Security(auth.verify)) -> Product:
     set_org_product(product, auth_result)
     logger.debug("In rollback_product_quantity:" + str(product))
     return UpdateProductService.rollback_product_quantity(product)
