@@ -90,6 +90,7 @@ This microservice adheres to industry-standard coding practices, including:
    ```
 
 3. **Set Up Environment Variables:** Create a .env file in the root directory with the following details:
+
    ```makefile
    AUTH0_DOMAIN="<auth0_domain>"
    AUTH0_API_AUDIENCE="<auth0_audience>"
@@ -98,3 +99,54 @@ This microservice adheres to industry-standard coding practices, including:
    ORIGIN="*"
    DB_URL="<DB_URL>"
    ```
+
+4. **Run in Development Mode:**
+
+   ```bash
+   fastapi dev app/main.py
+   ```
+
+5. **Run in Production Mode:**
+   ```bash
+   fastapi run app/main.py
+   ```
+
+## 🐳 Docker Setup
+
+A `Dockerfile` is provided for containerizing the application. To build and run the Docker image locally:
+
+1. Build the Docker image:
+
+   ```bash
+   docker build . -t <image name>
+   ```
+
+2. Run the conatiner locally:
+   ```bash
+   docker run -d -p 8000:8000 <image name>
+   ```
+
+## 📑 Future Work
+
+1. ### Test Suite
+
+   - Plan to introduce unit tests and integration tests for the microservice.
+   - Tests will ensure that the endpoints, database interactions, and security layers work as expected.
+   - Use pytest or FastAPI’s inbuilt testing features to mock services and test responses.
+
+2. ### CI/CD Pipeline
+
+   - Plan to implement a CI/CD pipeline using GitHub Actions or AWS CodePipeline.
+   - Automated builds, tests, and deployments to ECS will ensure smooth production deployments.
+   - Integration with DockerHub or ECR for managing Docker images.
+
+3. ### Enhanced Security
+   - In future iterations, implement rate limiting and role-based access control (RBAC) to make the endpoints more secure.
+
+# 📖 Documentation
+
+- FastAPI Docs: Once running, access the interactive API documentation at /docs or /redoc for details on how to use the available endpoints.
+
+# 💡 Contributing
+
+Feel free to raise issues or contribute to this project. Fork the repo, create a feature branch, and open a pull request for your changes.
