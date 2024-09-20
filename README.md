@@ -33,38 +33,19 @@ This microservice adheres to industry-standard coding practices, including:
     - `__init__.py`
     - `main.py`
     - `config/`
-      - `__init__.py`
-      - `config.py`
-      - `consts.py`
-      - `db_config,py`
-      - `logger_config.py`
+      - Files related to config of app
     - `database/`
-      - `__init__.py`
-      - `create_product_db.py`
-      - `read_product_db.py`
-      - `update_product_db.py`
-      - `delete_product_db.py`
+      - Files operating directly on database
     - `exceptions/`
-      - `__init__.py`
-      - `auth_exceptions.py`
-      - `invalid_body_exceptions.py`
+      - Custom exception classes
     - `models/`
-      - `__init__.py`
-      - `product.py`
+      - Models to parse input and output data into
     - `routes/`
-      - `__init__.py`
-      - `products.py`
+      - Routes for this service
     - `service/`
-      - `__init__.py`
-      - `create_product_service.py`
-      - `read_product_service.py`
-      - `update_product_service.py`
-      - `delete_product_service.py`
+      - Service layer between end points and database layer
     - `utils/`
-      - `__init__.py`
-      - `auth_validation.py`
-      - `req_body_validation.py`
-      - `utils.py`
+      - Additional utilities like validators.
 
 ## 🔧 Running the Project Locally
 
